@@ -11,15 +11,15 @@ import java.util.List;
 @Repository
 public interface IncidentRepository extends JpaRepository<Incident, Long> {
 
-    // ✅ Filter by status
+    
     @Query("SELECT i FROM Incident i WHERE i.status = :status")
     List<Incident> findByStatus(String status);
 
-    // ✅ Search by title
+    
     @Query("SELECT i FROM Incident i WHERE LOWER(i.title) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Incident> searchByTitle(String keyword);
 
-    // ✅ Find by date range
+    
     @Query("SELECT i FROM Incident i WHERE i.createdAt BETWEEN :start AND :end")
     List<Incident> findByDateRange(LocalDateTime start, LocalDateTime end);
 

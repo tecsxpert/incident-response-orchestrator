@@ -1,3 +1,4 @@
-com\internship\tool\entity\Incident.class
 com\internship\tool\repository\IncidentRepository.class
+com\internship\tool\controller\IncidentController.class
 com\internship\tool\ToolApplication.class
+com\internship\tool\entity\Incident.class

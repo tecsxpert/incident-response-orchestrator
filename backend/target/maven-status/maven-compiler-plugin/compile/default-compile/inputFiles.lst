@@ -1,4 +1,10 @@
 C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\entity\Incident.java
 C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\ToolApplication.java
+C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\entity\User.java
+C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\security\SecurityConfig.java
 C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\controller\IncidentController.java
+C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\controller\AuthController.java
+C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\service\UserService.java
 C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\repository\IncidentRepository.java
+C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\security\JwtUtil.java
+C:\Users\vishw\Desktop\incident-response-orchestrator\backend\src\main\java\com\internship\tool\repository\UserRepository.java

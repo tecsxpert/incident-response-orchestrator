@@ -25,14 +25,13 @@ def get_groq_client():
 @handle_errors
 @validate_required_fields(["incident_type", "severity", "description"])
 def recommend_actions():
-    """Generate response and remediation recommendations for an incident.
+    """Generate 3 actionable recommendations for an incident as JSON array.
     
     Request body:
     {
-        "incident_type": "ransomware|data_exfiltration|insider_threat|sql_injection|phishing|other",
+        "incident_type": "ransomware|data_exfiltration|insider_threat|sql_injection|phishing|apt|ddos|malware|other",
         "severity": "critical|high|medium|low",
-        "description": "Incident description",
-        "context": "Additional context (optional)"
+        "description": "Incident description"
     }
     
     Returns:
@@ -40,12 +39,29 @@ def recommend_actions():
         "status": "success",
         "incident_type": "ransomware",
         "severity": "critical",
-        "recommendations": "Structured action plan with timelines",
+        "recommendations": [
+            {
+                "action_type": "isolate_systems",
+                "description": "Immediately disconnect affected systems...",
+                "priority": 1
+            },
+            {
+                "action_type": "reset_credentials",
+                "description": "Reset all domain admin credentials...",
+                "priority": 1
+            },
+            {
+                "action_type": "enable_mfa",
+                "description": "Enable MFA on critical systems...",
+                "priority": 2
+            }
+        ],
         "generated_at": "ISO 8601 timestamp",
         "metadata": {
             "model_used": "llama-3.3-70b-versatile",
-            "response_type": "action_recommendations",
-            "timeline_phases": ["immediate", "short_term", "medium_term", "long_term"]
+            "response_type": "structured_action_recommendations",
+            "recommendation_count": 3,
+            "framework": "NIST Incident Response"
         }
     }
     """
@@ -55,7 +71,6 @@ def recommend_actions():
     incident_type = data.get("incident_type", "").strip().lower()
     severity = data.get("severity", "").strip().lower()
     description = data.get("description", "").strip()
-    context = data.get("context", "").strip()
     
     # Validate required fields
     if not incident_type:
@@ -78,14 +93,18 @@ def recommend_actions():
     # Generate timestamp
     generated_at = datetime.now(timezone.utc).isoformat()
     
-    # Call Groq for recommendations
+    # Call Groq for structured recommendations
     client = get_groq_client()
-    recommendations = client.recommend_actions(
+    recommendations = client.recommend_structured(
         incident_type=incident_type,
         severity=severity,
         description=description,
         system_prompt=SYSTEM_PROMPT
     )
+    
+    # Validate we got recommendations
+    if not recommendations:
+        raise ValueError("Failed to generate recommendations from AI model")
     
     # Return structured response
     return jsonify({
@@ -96,11 +115,11 @@ def recommend_actions():
         "generated_at": generated_at,
         "metadata": {
             "model_used": client.model,
-            "response_type": "action_recommendations",
-            "timeline_phases": ["immediate", "short_term", "medium_term", "long_term"],
-            "framework": "NIST Incident Response / SANS Incident Handling",
-            "temperature": 0.3,
-            "quality_target": "professional_enterprise_grade"
+            "response_type": "structured_action_recommendations",
+            "recommendation_count": len(recommendations),
+            "framework": "NIST Incident Response",
+            "temperature": 0.2,
+            "quality_target": "actionable_enterprise_grade"
         }
     }), 200
 

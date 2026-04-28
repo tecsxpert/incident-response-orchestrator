@@ -7,7 +7,10 @@ import os
 import logging
 from groq import Groq
 from typing import Optional, Dict, List, Any
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -161,3 +164,63 @@ class GroqClient:
 
         logger.info("Finding similar incidents")
         return self.chat(messages)
+
+    def recommend_structured(
+        self,
+        incident_type: str,
+        severity: str,
+        description: str,
+        system_prompt: str = "",
+    ) -> List[Dict[str, Any]]:
+        """Generate 3 structured actionable recommendations as JSON array.
+        
+        Args:
+            incident_type: Type of incident (ransomware, APT, etc.)
+            severity: Severity level (critical, high, medium, low)
+            description: Incident description
+            system_prompt: System prompt
+            
+        Returns:
+            List of 3 recommendation dictionaries with action_type, description, priority
+        """
+        import json
+        from prompts.templates import STRUCTURED_RECOMMENDATIONS_PROMPT
+
+        user_prompt = STRUCTURED_RECOMMENDATIONS_PROMPT.format(
+            incident_type=incident_type,
+            severity=severity,
+            description=description
+        )
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+
+        logger.info(f"Generating structured recommendations for {incident_type} ({severity})")
+        
+        response = self.chat(messages, temperature=0.2, max_tokens=1024)
+        
+        try:
+            # Extract JSON from response (handle cases where Groq may add extra text)
+            json_start = response.find('[')
+            json_end = response.rfind(']') + 1
+            
+            if json_start >= 0 and json_end > json_start:
+                json_str = response[json_start:json_end]
+                recommendations = json.loads(json_str)
+                
+                # Validate structure
+                if isinstance(recommendations, list) and len(recommendations) > 0:
+                    for rec in recommendations:
+                        if not all(k in rec for k in ['action_type', 'description', 'priority']):
+                            logger.warning(f"Recommendation missing required fields: {rec}")
+                    
+                    # Ensure we have 3 recommendations
+                    return recommendations[:3] if len(recommendations) >= 3 else recommendations
+            
+            logger.error(f"Failed to parse recommendations JSON: {response}")
+            return []
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON parsing error in recommendations: {str(e)}")
+            return []

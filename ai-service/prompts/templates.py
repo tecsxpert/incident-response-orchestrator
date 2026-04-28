@@ -167,3 +167,29 @@ Provide structured recommendations for:
 4. Long-term improvements (ongoing)
 
 Include specific tools, procedures, and timeline for implementation."""
+
+STRUCTURED_RECOMMENDATIONS_PROMPT = """Generate exactly 3 actionable recommendations for this {severity} {incident_type} incident.
+
+INCIDENT DETAILS:
+{description}
+
+You MUST respond with ONLY a valid JSON array, no other text. Each recommendation must have exactly these fields:
+- action_type: Type of action (e.g., "isolate_systems", "reset_credentials", "patch_vulnerability", "block_ips", "enable_mfa", "segment_network", "update_firewall", "increase_monitoring", "notify_authorities", "review_logs")
+- description: Detailed, actionable description (2-3 sentences, specific and technical)
+- priority: Priority level as integer 1-3 where 1 is highest priority
+
+REQUIREMENTS:
+- Return EXACTLY 3 recommendations
+- Prioritize based on incident severity and containment needs
+- Recommendations must be specific and immediately actionable
+- Order by priority (highest first)
+- No explanations, just the JSON array
+- Each description must be specific to {incident_type} incidents
+- Format: [{{...}}, {{...}}, {{...}}]
+
+Example format:
+[
+  {{"action_type": "isolate_systems", "description": "Immediately disconnect affected file servers from network to prevent ransomware propagation to backup systems.", "priority": 1}},
+  {{"action_type": "reset_credentials", "description": "Reset all domain admin and service account passwords, focusing on accounts with access to affected systems.", "priority": 1}},
+  {{"action_type": "enable_mfa", "description": "Enable MFA on all critical systems and remote access points to prevent lateral movement using compromised credentials.", "priority": 2}}
+]"""

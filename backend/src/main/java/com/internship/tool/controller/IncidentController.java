@@ -3,6 +3,7 @@ package com.internship.tool.controller;
 import com.internship.tool.entity.Incident;
 import com.internship.tool.repository.IncidentRepository;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,42 +18,23 @@ public class IncidentController {
         this.repository = repository;
     }
 
-    // 🔹 UPDATE INCIDENT
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','VIEWER')")
+    public List<Incident> getAll() {
+        return repository.findAll();
+    }
+
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Incident updateIncident(@PathVariable UUID id, @RequestBody Incident updated) {
         Incident incident = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Incident not found"));
-
-        incident.setTitle(updated.getTitle());
-        incident.setDescription(updated.getDescription());
-        incident.setStatus(updated.getStatus());
-        incident.setPriority(updated.getPriority());
-        incident.setAssignedTo(updated.getAssignedTo());
-
-        return repository.save(incident);
+                .orElseThrow(() -> new RuntimeException("Not found"));
+        return repository.save(updated);
     }
 
-    // 🔹 SOFT DELETE
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteIncident(@PathVariable UUID id) {
-        Incident incident = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Incident not found"));
-
-        incident.setIsDeleted(true);
-        repository.save(incident);
-
-        return "Incident soft deleted";
-    }
-
-    // 🔹 SEARCH
-    @GetMapping("/search")
-    public List<Incident> search(@RequestParam String q) {
-        return repository.search(q);
-    }
-
-    // 🔹 STATS (TOTAL COUNT)
-    @GetMapping("/stats")
-    public long stats() {
-        return repository.count();
+        return "Deleted";
     }
 }

@@ -13,14 +13,14 @@ import java.util.Map;
 public class AuthController {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder encoder;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
     public AuthController(UserRepository userRepository,
-                          BCryptPasswordEncoder encoder,
+                          BCryptPasswordEncoder passwordEncoder,
                           JwtUtil jwtUtil) {
         this.userRepository = userRepository;
-        this.encoder = encoder;
+        this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
 
@@ -29,49 +29,38 @@ public class AuthController {
     public String register(@RequestBody User user) {
 
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return "User already exists";
+            return "Username already exists";
         }
 
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setRole("VIEWER");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(user);
 
         return "User registered successfully";
     }
+@PostMapping("/login")
+public Map<String, String> login(@RequestBody User user) {
 
-    // ✅ LOGIN → RETURN TOKEN
-    @PostMapping("/login")
-    public Map<String, String> login(@RequestBody User user) {
+    System.out.println("STEP 1");
 
-        User existingUser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User dbUser = userRepository.findByUsername(user.getUsername())
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (encoder.matches(user.getPassword(), existingUser.getPassword())) {
+    System.out.println("STEP 2");
 
-            String token = jwtUtil.generateToken(user.getUsername());
-
-            return Map.of("token", token);
-
-        } else {
-            throw new RuntimeException("Invalid password");
-        }
+    if (!passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
+        throw new RuntimeException("Invalid password");
     }
 
-    // ✅ REFRESH TOKEN
-    @PostMapping("/refresh")
-    public Map<String, String> refresh(@RequestHeader("Authorization") String authHeader) {
+    System.out.println("STEP 3");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("Invalid token");
-        }
+    String token = jwtUtil.generateToken(
+            dbUser.getUsername(),
+            dbUser.getRole()
+    );
 
-        String oldToken = authHeader.substring(7);
+    System.out.println("STEP 4");
 
-        String username = jwtUtil.extractUsername(oldToken);
-
-        String newToken = jwtUtil.generateToken(username);
-
-        return Map.of("token", newToken);
-    }
+    return Map.of("token", token);
+}
 }

@@ -39,7 +39,7 @@ export default function CreateIncident() {
       return;
     }
     console.log("Submitting:", form);
-    api.post("/api/incidents/create", form)
+    api.post("/incidents", form)
       .then(() => navigate("/"))
       .catch((err) => console.log("Error creating incident:", err));
   }

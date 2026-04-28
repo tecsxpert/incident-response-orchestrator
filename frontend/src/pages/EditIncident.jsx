@@ -18,7 +18,7 @@ export default function EditIncident() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    api.get(`/api/incidents/${id}`)
+    api.get(`/incidents/${id}`)
       .then((res) => setForm(res.data))
       .catch((err) => console.log("Error fetching incident:", err));
   }, [id]);
@@ -46,7 +46,7 @@ export default function EditIncident() {
       return;
     }
     console.log("Updating:", form);
-    api.put(`/api/incidents/${id}`, form)
+    api.put(`/incidents/${id}`, form)
       .then(() => navigate("/"))
       .catch((err) => console.log("Error updating incident:", err));
   }

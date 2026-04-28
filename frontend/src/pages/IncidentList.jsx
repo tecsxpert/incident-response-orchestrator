@@ -20,7 +20,7 @@ export default function IncidentList() {
 
   useEffect(() => {
     setLoading(true);
-    api.get(`/api/incidents/all?page=${page}&size=10&sort=${sortField},${sortDir}`)
+    api.get(`/incidents?page=${page}&size=10&sort=${sortField},${sortDir}`)
       .then((res) => {
         setIncidents(res.data.content);
         setTotalPages(res.data.totalPages);
@@ -111,7 +111,11 @@ export default function IncidentList() {
             {incidents.map((incident) => (
               <tr key={incident.id} className="hover:bg-gray-50">
                 <td className="border border-gray-300 px-4 py-2">{incident.id}</td>
-                <td className="border border-gray-300 px-4 py-2">{incident.title}</td>
+                <td
+                  className="border border-gray-300 px-4 py-2 cursor-pointer text-blue-600 hover:underline"
+                  onClick={() => navigate(`/incidents/${incident.id}`)}>
+                  {incident.title}
+                </td>
                 <td className="border border-gray-300 px-4 py-2">{incident.priority}</td>
                 <td className="border border-gray-300 px-4 py-2">{incident.status}</td>
                 <td className="border border-gray-300 px-4 py-2">{incident.assignedTo}</td>

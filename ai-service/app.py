@@ -30,10 +30,12 @@ def create_app(config=None):
     # Register blueprints
     try:
         from routes.describe import describe_bp
+        from routes.recommend import recommend_bp
         app.register_blueprint(describe_bp)
-        logger.info("Registered describe blueprint")
+        app.register_blueprint(recommend_bp)
+        logger.info("Registered describe and recommend blueprints")
     except Exception as e:
-        logger.error(f"Failed to register describe blueprint: {str(e)}")
+        logger.error(f"Failed to register blueprints: {str(e)}")
     
     # Error handlers
     @app.errorhandler(404)
@@ -61,12 +63,22 @@ def create_app(config=None):
             "service": "incident-response-ai",
             "version": "1.0.0",
             "status": "running",
-            "endpoints": [
-                "POST /api/describe",
-                "POST /api/describe/similar",
-                "POST /api/describe/summary",
-                "GET /health"
-            ]
+            "endpoints": {
+                "describe": [
+                    "POST /api/describe - Comprehensive incident analysis",
+                    "POST /api/describe/similar - Find similar incidents",
+                    "POST /api/describe/summary - Executive summary"
+                ],
+                "recommend": [
+                    "POST /api/recommend - Action recommendations",
+                    "POST /api/recommend/escalation - Escalation procedures",
+                    "POST /api/recommend/remediation - Remediation plan"
+                ],
+                "health": [
+                    "GET /health - Health check"
+                ]
+            },
+            "framework": "MITRE ATT&CK / CVSS / NIST CSF"
         }), 200
     
     logger.info("Flask application created successfully")

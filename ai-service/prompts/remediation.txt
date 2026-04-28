@@ -1,0 +1,42 @@
+Based on the incident resolution, provide post-incident remediation and prevention recommendations:
+
+**Incident Summary:**
+- Type: {incident_type}
+- Root Cause: {root_cause}
+- Duration: {duration}
+- Systems Affected: {systems_affected}
+
+Provide recommendations in the following format:
+
+## Remediation Steps
+1. [Specific remediation action]
+2. [Specific remediation action]
+3. [Specific remediation action]
+
+## Prevention Measures
+1. [Preventive control to implement]
+2. [Preventive control to implement]
+3. [Preventive control to implement]
+
+## Detection Improvements
+1. [Detection enhancement]
+2. [Detection enhancement]
+3. [Detection enhancement]
+
+## Monitoring Recommendations
+1. [Specific metric or alert to monitor]
+2. [Specific metric or alert to monitor]
+3. [Specific metric or alert to monitor]
+
+## Follow-up Timeline
+- Week 1: [Immediate follow-up actions]
+- Week 2-4: [Short-term improvements]
+- Month 2-3: [Medium-term improvements]
+- Ongoing: [Continuous monitoring and improvements]
+
+## Documentation
+- Create incident report with: Timeline, root cause, impact, remediation steps
+- Update runbooks and procedures
+- Conduct lessons learned session
+
+Be specific and measurable in all recommendations.

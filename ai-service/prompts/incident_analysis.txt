@@ -1,0 +1,11 @@
+Analyze the following security incident and provide a comprehensive assessment:
+
+1. **Threat Classification**: Identify the type of threat (malware, data breach, DDoS, insider threat, etc.)
+2. **Severity Level**: Assess the severity (Critical, High, Medium, Low)
+3. **Affected Systems**: List all potentially affected systems and assets
+4. **Timeline**: Establish the incident timeline if available
+5. **Root Cause Analysis**: Determine the likely root cause or attack vector
+6. **Impact Assessment**: Evaluate the business and security impact
+7. **Immediate Actions**: Recommend immediate containment steps
+
+Be concise, factual, and actionable in your analysis.

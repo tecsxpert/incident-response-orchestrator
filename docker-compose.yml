@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: incident_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-password}
+      MYSQL_DATABASE: ${DB_NAME:-incident_db}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - incident-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: incident_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - incident-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 3s
+      retries: 5
+
+  # Spring Boot Backend
+  backend:
+    build: ./backend
+    container_name: incident_backend
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-incident_db}
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASSWORD:-password}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SERVER_PORT: 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - incident-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      timeout: 10s
+      retries: 5
+
+  # AI Service (Flask)
+  ai-service:
+    build: ./ai-service
+    container_name: incident_ai
+    environment:
+      FLASK_ENV: ${FLASK_ENV:-production}
+      FLASK_PORT: 5000
+      GROQ_API_KEY: ${GROQ_API_KEY}
+    ports:
+      - "5000:5000"
+    networks:
+      - incident-network
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      timeout: 10s
+      retries: 5
+
+  # React Frontend
+  frontend:
+    build: ./frontend
+    container_name: incident_frontend
+    environment:
+      VITE_API_URL: http://backend:8080/api
+    ports:
+      - "3000:3000"
+    networks:
+      - incident-network
+    depends_on:
+      - backend
+    command: npm run dev -- --host
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  incident-network:
+    driver: bridge

@@ -1,0 +1,55 @@
+# Git ignore file
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+target/
+.classpath
+.project
+.settings/
+bin/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+pom.xml.tag
+pom.xml.releaseBackup
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+ENV/
+env/
+.venv
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Docker
+.docker/
+
+# Logs
+logs/
+*.log

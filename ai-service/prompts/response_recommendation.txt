@@ -1,0 +1,30 @@
+Based on the incident details provided, recommend a prioritized incident response action plan:
+
+**Incident Details:**
+- Type: {incident_type}
+- Severity: {severity}
+- Current Status: {status}
+
+Provide recommendations in the following format:
+
+## Immediate Actions (Next 1-2 hours)
+1. [Action with priority and rationale]
+2. [Action with priority and rationale]
+3. [Action with priority and rationale]
+
+## Short-term Actions (Next 24 hours)
+1. [Action with priority and rationale]
+2. [Action with priority and rationale]
+3. [Action with priority and rationale]
+
+## Follow-up Actions (1-7 days)
+1. [Action with priority and rationale]
+2. [Action with priority and rationale]
+3. [Action with priority and rationale]
+
+## Escalation Requirements
+- Notify: [List of stakeholders to notify]
+- External Resources: [Any external help needed]
+- Regulatory/Compliance: [Any compliance obligations]
+
+Be specific and actionable in all recommendations.

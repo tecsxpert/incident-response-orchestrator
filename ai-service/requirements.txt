@@ -1,23 +1,6 @@
-# Core Flask dependencies
 Flask==3.0.0
 Flask-CORS==4.0.0
-Werkzeug==3.0.0
-
-# Environment and configuration
+groq==0.9.0
 python-dotenv==1.0.0
-
-# AI and ML services
-groq==0.4.1
-chromadb==0.4.24
-
-# HTTP and utilities
-requests==2.31.0
-
-# Production server
 gunicorn==21.2.0
 
-# Validation and serialization
-marshmallow==3.20.1
-
-# Logging and monitoring
-python-json-logger==2.0.7

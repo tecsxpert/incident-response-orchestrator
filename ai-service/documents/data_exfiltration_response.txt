@@ -1,0 +1,139 @@
+DATA EXFILTRATION INCIDENT RESPONSE PROCEDURES
+
+1. DETECTION AND TRIAGE (First 30 minutes)
+
+CONFIRMATION STEPS:
+- Verify data exfiltration actually occurred
+- False positives common with DLP system alerts
+- Review network logs for suspicious connections
+- Confirm volume and direction of data transfer
+- Identify source and destination systems
+
+SEVERITY ASSESSMENT:
+- Determine data classification (public, internal, confidential, restricted)
+- Estimate number of records involved
+- Identify data types (PII, financial, trade secrets, medical)
+- Calculate potential regulatory impact
+- Assess customer notification requirements
+
+COMMUNICATION CHANNELS:
+- Alert legal department immediately
+- Notify privacy officer or CISO
+- Brief chief information security officer
+- Prepare executive summary for leadership
+- Document all actions taken
+
+2. CONTAINMENT (30 minutes - 4 hours)
+
+NETWORK ISOLATION:
+- Block source system from network access
+- Revoke access credentials for compromised account
+- Disable remote access for affected user
+- Block suspicious destination IPs at firewall
+- Monitor for data exfiltration to other locations
+
+EVIDENCE PRESERVATION:
+- Capture network flow data (NetFlow, sFlow)
+- Preserve firewall and proxy logs
+- Create forensic image of source system
+- Document timeline of suspicious activity
+- Collect email and system logs
+
+THREAT ACTOR ACTIVITY:
+- Search for evidence of lateral movement
+- Look for additional compromised accounts
+- Check for installed persistence mechanisms
+- Review privileged account usage logs
+- Search for credentials in memory or registry
+
+3. NOTIFICATION REQUIREMENTS
+
+REGULATORY OBLIGATIONS:
+- GDPR: 72-hour notification to authorities if EU residents affected
+- CCPA: 45-day notification to California residents
+- HIPAA: 60-day notification requirement for PHI breaches
+- PCI-DSS: Notification required for payment card data
+- State laws: Often require notification without unreasonable delay
+
+CUSTOMER NOTIFICATION:
+- Prepare notification letter draft
+- Include what data was compromised
+- Describe incident response actions taken
+- Provide credit monitoring information
+- List resources for affected individuals
+
+REGULATORY REPORTING:
+- Submit SEC 8-K if publicly traded company
+- File with HHS for healthcare providers
+- Report to IC3 or local law enforcement
+- Notify payment processors for card data
+- File with state attorney generals as required
+
+4. INVESTIGATION PHASE (4-24 hours)
+
+FORENSIC ANALYSIS:
+- Analyze system logs for initial access vector
+- Timeline malware deployment and data collection
+- Identify all tools and techniques used
+- Trace lateral movement paths
+- Document privilege escalation methods
+
+THREAT INTELLIGENCE:
+- Check if data appears in known breaches
+- Search dark web for data listings
+- Correlate with known threat actors
+- Analyze command and control infrastructure
+- Determine if data exfiltration still ongoing
+
+SCOPE EXPANSION:
+- Search for similar indicators on other systems
+- Check employee devices for compromise
+- Scan for data collection tools (Mimikatz, etc.)
+- Review VPN logs for suspicious access
+- Check email for phishing indicators
+
+5. REMEDIATION AND RECOVERY
+
+ACCOUNT HARDENING:
+- Reset compromised account password
+- Implement MFA on affected accounts
+- Review and restrict account permissions
+- Monitor for account reuse
+- Disable unnecessary accounts
+
+SYSTEM REMEDIATION:
+- Remove malware and persistence mechanisms
+- Patch vulnerabilities leveraged in attack
+- Update endpoint detection signatures
+- Rebuild critical systems from clean backups
+- Implement application whitelisting
+
+MONITORING AND PREVENTION:
+- Deploy enhanced data loss prevention (DLP)
+- Implement behavioral analytics
+- Monitor for re-exfiltration attempts
+- Increase monitoring of privileged accounts
+- Conduct security awareness training
+
+6. POST-INCIDENT ACTIONS
+
+LESSONS LEARNED:
+- Document root cause analysis findings
+- Identify control gaps that enabled attack
+- Review effectiveness of incident response
+- Update incident response procedures
+- Conduct staff debriefing session
+
+POLICY UPDATES:
+- Strengthen access control policies
+- Implement zero-trust architecture
+- Increase monitoring and logging
+- Enhance email security controls
+- Implement network segmentation
+
+LONG-TERM IMPROVEMENTS:
+- Implement data classification framework
+- Deploy threat hunting capabilities
+- Conduct security assessments
+- Implement continuous monitoring
+- Increase security training frequency

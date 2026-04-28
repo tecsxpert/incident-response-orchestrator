@@ -1,0 +1,106 @@
+RANSOMWARE INCIDENT RESPONSE PLAYBOOK
+
+1. IMMEDIATE CONTAINMENT (0-2 hours)
+
+Ransomware attacks require rapid response to prevent spread:
+
+ISOLATION PROCEDURES:
+- Immediately disconnect infected systems from network (both wired and wireless)
+- Do NOT power down systems - evidence may be lost
+- Identify all systems that were connected during infection window
+- Isolate backup systems if connected on same network
+- Disable or reset VPN and remote access credentials
+
+ALERT NOTIFICATION:
+- Notify incident response team immediately
+- Alert security operations center (SOC)
+- Document exact time of discovery
+- Preserve all evidence before any cleanup
+
+COMMUNICATION PROTOCOL:
+- Establish war room with key stakeholders
+- Define communication channels (dedicated Slack, phone bridge)
+- Assign incident commander with decision authority
+- Brief executive leadership within 30 minutes
+
+2. ASSESSMENT PHASE (2-8 hours)
+
+FORENSIC PRESERVATION:
+- Create forensic images of affected systems before any remediation
+- Preserve memory dumps from infected machines
+- Document all visible indicators of compromise (IoCs)
+- Collect ransom notes and associated files
+
+SCOPE DETERMINATION:
+- Scan network for additional infections using endpoint detection
+- Check backup systems for signs of compromise
+- Review backup logs for unauthorized access attempts
+- Identify patient zero (first infected system)
+
+THREAT INTELLIGENCE:
+- Research ransom note for threat actor identification
+- Check MITRE ATT&CK for similar campaigns
+- Consult threat intelligence feeds and dark web monitoring
+- Determine if data exfiltration occurred before encryption
+
+3. RESPONSE OPTIONS
+
+CONTAINMENT-ONLY APPROACH:
+- Rebuild systems from known-good backups
+- Implement stronger security controls to prevent recurrence
+- Monitor for indicators the threat actor returns
+- Estimate recovery time (typically 2-10 days depending on scale)
+
+RANSOM NEGOTIATION OPTION:
+- NOT RECOMMENDED as official policy
+- May prolong incident and encourage future attacks
+- Involves working with law enforcement
+- FBI recommends against payment
+- If pursuing, contact FBI immediately for guidance
+
+FORENSIC INVESTIGATION APPROACH:
+- Full forensic analysis to understand attack vector
+- Threat hunting for lateral movement paths
+- Extended monitoring for persistence mechanisms
+- Longer timeline (weeks to months) but more comprehensive
+
+4. RECOVERY PHASE (8-48 hours)
+
+SYSTEM RESTORATION:
+- Restore from verified clean backups
+- Verify backup integrity before restoration
+- Rebuild systems that were not backed up
+- Implement new security controls during rebuild
+
+CREDENTIAL RESET:
+- Reset all domain administrator credentials
+- Change service account passwords
+- Update VPN and remote access credentials
+- Enable MFA on all critical accounts
+
+MONITORING ENHANCEMENT:
+- Deploy EDR (Endpoint Detection and Response) if not present
+- Enable enhanced logging on critical systems
+- Monitor for exfiltration attempts for 30 days
+- Watch for threat actor re-entry attempts
+
+5. POST-INCIDENT (Ongoing)
+
+ROOT CAUSE ANALYSIS:
+- Analyze how threat actor gained initial access
+- Identify unpatched vulnerabilities
+- Review access control policies
+- Assess backup strategy effectiveness
+
+SECURITY IMPROVEMENTS:
+- Patch all systems to current versions
+- Implement network segmentation
+- Deploy email filtering and URL inspection
+- Enable MFA organization-wide
+- Conduct security awareness training
+
+BUSINESS CONTINUITY:
+- Review disaster recovery plan effectiveness
+- Update incident response procedures
+- Conduct tabletop exercises quarterly
+- Maintain incident timeline documentation

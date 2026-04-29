@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import api from "../services/api";
+import AiPanel from "../components/AiPanel";
 
 const mockIncident = {
   id: 1,
@@ -118,14 +119,7 @@ export default function IncidentDetail() {
         </div>
       </div>
 
-      <div className="border border-gray-300 rounded p-4">
-        <h2 className="text-lg font-semibold mb-2">AI Analysis</h2>
-        {incident.aiAnalysis ? (
-          <p className="text-sm text-gray-700">{incident.aiAnalysis}</p>
-        ) : (
-          <p className="text-sm text-gray-400">AI analysis not available yet.</p>
-        )}
-      </div>
+      <AiPanel incident={incident} />
     </div>
   );
 }

@@ -1,0 +1,351 @@
+/* ReportStreamer Component Styles */
+
+.report-streamer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Metadata Section */
+.metadata-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-left: 4px solid #007bff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.metadata-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metadata-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metadata-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.metadata-value.type-ransomware,
+.metadata-value.severity-critical {
+  color: #dc3545;
+}
+
+.metadata-value.type-data_exfiltration,
+.metadata-value.severity-high {
+  color: #fd7e14;
+}
+
+.metadata-value.type-malware,
+.metadata-value.severity-medium {
+  color: #ffc107;
+}
+
+.metadata-value.severity-low {
+  color: #28a745;
+}
+
+/* Controls Section */
+.controls-section {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #5a6268 0%, #4e555b 100%);
+}
+
+.complete-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #d4edda;
+  color: #155724;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #c3e6cb;
+}
+
+/* Error Section */
+.error-section {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  color: #721c24;
+  align-items: center;
+}
+
+.error-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.error-message {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Loading Section */
+.loading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  color: #666;
+}
+
+.spinner {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.word-count {
+  font-size: 12px;
+  color: #999;
+  font-weight: 500;
+}
+
+/* Report Content Section */
+.report-content {
+  flex: 1;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 8px;
+  max-height: 600px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  line-height: 1.8;
+}
+
+.content-text {
+  font-size: 14px;
+  color: #333;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.cursor {
+  animation: blink 1s step-start infinite;
+  color: #007bff;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #999;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Statistics Section */
+.statistics-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #007bff;
+}
+
+/* Export Section */
+.export-section {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Scrollbar Styling */
+.report-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.report-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.report-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.report-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .report-streamer {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .metadata-section {
+    grid-template-columns: 1fr;
+  }
+
+  .controls-section {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .report-content {
+    max-height: 400px;
+    font-size: 13px;
+  }
+
+  .statistics-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .report-streamer {
+    padding: 12px;
+  }
+
+  .metadata-section {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .report-content {
+    max-height: 300px;
+    font-size: 12px;
+    padding: 16px;
+  }
+
+  .statistics-section {
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+}

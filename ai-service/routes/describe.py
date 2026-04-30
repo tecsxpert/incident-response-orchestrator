@@ -1,10 +1,11 @@
 """Describe endpoint for incident analysis."""
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response, stream_with_context
 from services.groq_client import GroqClient
 from prompts.templates import SYSTEM_PROMPT
 from utils import require_json, handle_errors, validate_required_fields
 import logging
+import json
 from datetime import datetime, timezone
 
 
@@ -231,3 +232,124 @@ def generate_report():
             "quality_target": "executive_grade"
         }
     }), 200
+
+
+@describe_bp.route("/generate-report-stream", methods=["POST"])
+@require_json
+@validate_required_fields(["title", "incident_type", "severity", "description"])
+def generate_report_stream():
+    """Generate a comprehensive incident response report with streaming tokens via Server-Sent Events.
+    
+    This endpoint streams tokens in real-time as they are generated, allowing the frontend
+    to display the report as it's being generated without waiting for the full completion.
+    
+    Request body:
+    {
+        "title": "Incident title (required)",
+        "incident_type": "ransomware|data_exfiltration|insider_threat|sql_injection|phishing|apt|ddos|malware|other",
+        "severity": "critical|high|medium|low",
+        "description": "Detailed incident description (required)",
+        "discovery_date": "Date discovered (optional)",
+        "current_status": "Incident status (optional)"
+    }
+    
+    Returns:
+    Server-Sent Event stream with tokens, each event formatted as:
+    data: <token>
+    
+    The stream will complete with a final event containing metadata about the request.
+    """
+    data = request.get_json()
+    
+    # Extract and validate input
+    title = data.get("title", "").strip()
+    incident_type = data.get("incident_type", "").strip().lower()
+    severity = data.get("severity", "").strip().lower()
+    description = data.get("description", "").strip()
+    discovery_date = data.get("discovery_date", "Unknown").strip()
+    current_status = data.get("current_status", "Under Investigation").strip()
+    
+    # Validate required fields
+    if not title:
+        return jsonify({"error": "Title is required"}), 400
+    if not incident_type:
+        return jsonify({"error": "Incident type is required"}), 400
+    if not severity:
+        return jsonify({"error": "Severity level is required"}), 400
+    if not description:
+        return jsonify({"error": "Description cannot be empty"}), 400
+    
+    # Validate incident type
+    valid_types = ["ransomware", "data_exfiltration", "insider_threat", "sql_injection", "phishing", "apt", "ddos", "malware", "other"]
+    if incident_type not in valid_types:
+        return jsonify({"error": f"Invalid incident type. Must be one of: {', '.join(valid_types)}"}), 400
+    
+    # Validate severity
+    valid_severities = ["critical", "high", "medium", "low"]
+    if severity not in valid_severities:
+        return jsonify({"error": f"Invalid severity. Must be one of: {', '.join(valid_severities)}"}), 400
+    
+    try:
+        client = get_groq_client()
+        
+        def event_stream():
+            """Generator function to stream report tokens as Server-Sent Events."""
+            try:
+                # Send metadata event
+                metadata = {
+                    "type": "metadata",
+                    "title": title,
+                    "incident_type": incident_type,
+                    "severity": severity,
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "model": client.model
+                }
+                yield f"data: {json.dumps(metadata)}\n\n"
+                
+                # Stream report tokens
+                token_count = 0
+                for token in client.generate_report_stream(
+                    title=title,
+                    incident_type=incident_type,
+                    severity=severity,
+                    description=description,
+                    discovery_date=discovery_date,
+                    current_status=current_status,
+                    system_prompt=SYSTEM_PROMPT
+                ):
+                    yield f"data: {token}\n\n"
+                    token_count += 1
+                
+                # Send completion event
+                completion_event = {
+                    "type": "complete",
+                    "tokens_streamed": token_count,
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
+                yield f"data: {json.dumps(completion_event)}\n\n"
+                
+                logger.info(f"Streamed report for {incident_type} incident in {token_count} tokens")
+                
+            except Exception as e:
+                logger.error(f"Error during report streaming: {str(e)}")
+                error_event = {
+                    "type": "error",
+                    "error": str(e),
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
+                yield f"data: {json.dumps(error_event)}\n\n"
+        
+        # Return streaming response with proper SSE headers
+        return Response(
+            stream_with_context(event_stream()),
+            mimetype="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "X-Accel-Buffering": "no",
+                "Connection": "keep-alive"
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"Error in generate_report_stream endpoint: {str(e)}")
+        return jsonify({"error": "Failed to generate report stream"}), 500

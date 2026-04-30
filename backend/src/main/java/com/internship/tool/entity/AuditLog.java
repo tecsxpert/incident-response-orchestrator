@@ -12,17 +12,58 @@ public class AuditLog {
 
     private String action;
     private String username;
-    private LocalDateTime timestamp;
 
-    // getters & setters
-    public Long getId() { return id; }
+    @Column(columnDefinition = "TEXT")
+    private String oldData;
 
-    public String getAction() { return action; }
-    public void setAction(String action) { this.action = action; }
+    @Column(columnDefinition = "TEXT")
+    private String newData;
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    private LocalDateTime timestamp = LocalDateTime.now();
 
-    public LocalDateTime getTimestamp() { return timestamp; }
-    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    // 🔥 GETTERS & SETTERS
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getOldData() {
+        return oldData;
+    }
+
+    public void setOldData(String oldData) {
+        this.oldData = oldData;
+    }
+
+    public String getNewData() {
+        return newData;
+    }
+
+    public void setNewData(String newData) {
+        this.newData = newData;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 }

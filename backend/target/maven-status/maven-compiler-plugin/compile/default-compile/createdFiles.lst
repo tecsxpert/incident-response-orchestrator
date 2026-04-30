@@ -1,6 +1,8 @@
+com\internship\tool\aop\TrackAudit.class
 com\internship\tool\controller\AuditController.class
 com\internship\tool\repository\IncidentRepository.class
 com\internship\tool\controller\IncidentController.class
+com\internship\tool\service\IncidentService.class
 com\internship\tool\security\JwtAuthFilter.class
 com\internship\tool\security\SecurityConfig.class
 com\internship\tool\entity\AuditLog.class
@@ -13,4 +15,5 @@ com\internship\tool\entity\User.class
 com\internship\tool\controller\AuthController.class
 com\internship\tool\repository\AuditLogRepository.class
 com\internship\tool\security\JwtUtil.class
+com\internship\tool\aop\AuditAspect.class
 com\internship\tool\GlobalExceptionHandler.class

@@ -193,3 +193,62 @@ Example format:
   {{"action_type": "reset_credentials", "description": "Reset all domain admin and service account passwords, focusing on accounts with access to affected systems.", "priority": 1}},
   {{"action_type": "enable_mfa", "description": "Enable MFA on all critical systems and remote access points to prevent lateral movement using compromised credentials.", "priority": 2}}
 ]"""
+
+GENERATE_REPORT_PROMPT = """Generate a comprehensive incident response report in JSON format.
+
+INCIDENT DATA:
+Title: {title}
+Type: {incident_type}
+Severity: {severity}
+Description: {description}
+Discovery Date: {discovery_date}
+Current Status: {current_status}
+
+Produce ONLY a valid JSON object with NO additional text. Structure exactly as follows:
+
+{{
+  "title": "Professional report title summarizing the incident",
+  "executive_summary": "2-3 paragraph executive summary suitable for C-level executives, including impact assessment and key facts",
+  "overview": "Detailed technical overview of the incident including attack vector, scope, and timeline (3-5 paragraphs)",
+  "top_items": [
+    {{
+      "item": "Critical finding or impact",
+      "description": "Detailed description of the finding and its significance"
+    }},
+    {{
+      "item": "Second critical finding",
+      "description": "Description with context"
+    }},
+    {{
+      "item": "Third critical finding",
+      "description": "Description with context"
+    }}
+  ],
+  "recommendations": [
+    {{
+      "action": "Immediate action required",
+      "timeframe": "0-24 hours",
+      "priority": "P1 - Critical"
+    }},
+    {{
+      "action": "Short-term remediation step",
+      "timeframe": "1-7 days",
+      "priority": "P2 - High"
+    }},
+    {{
+      "action": "Medium-term improvement",
+      "timeframe": "1-4 weeks",
+      "priority": "P3 - Medium"
+    }}
+  ]
+}}
+
+REQUIREMENTS:
+- Title must be professional and descriptive
+- Executive summary must be suitable for non-technical stakeholders
+- Overview must include technical depth with specific details
+- Top items should highlight 3 most critical findings
+- Recommendations must be actionable and timebound
+- Use MITRE ATT&CK and CVSS context where applicable
+- All text must be professional enterprise-grade quality
+- Ensure valid JSON formatting with no markdown or escaping issues"""

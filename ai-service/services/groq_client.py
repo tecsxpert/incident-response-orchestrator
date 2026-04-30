@@ -224,3 +224,73 @@ class GroqClient:
         except json.JSONDecodeError as e:
             logger.error(f"JSON parsing error in recommendations: {str(e)}")
             return []
+
+    def generate_report(
+        self,
+        title: str,
+        incident_type: str,
+        severity: str,
+        description: str,
+        discovery_date: str = "Unknown",
+        current_status: str = "Under Investigation",
+        system_prompt: str = "",
+    ) -> Dict[str, Any]:
+        """Generate a comprehensive incident response report in JSON format.
+        
+        Args:
+            title: Incident title
+            incident_type: Type of incident
+            severity: Severity level
+            description: Incident description
+            discovery_date: Date incident was discovered
+            current_status: Current incident status
+            system_prompt: System prompt
+            
+        Returns:
+            Dictionary with report structure (title, executive_summary, overview, top_items, recommendations)
+        """
+        import json
+        from prompts.templates import GENERATE_REPORT_PROMPT
+
+        user_prompt = GENERATE_REPORT_PROMPT.format(
+            title=title,
+            incident_type=incident_type,
+            severity=severity,
+            description=description,
+            discovery_date=discovery_date,
+            current_status=current_status
+        )
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+
+        logger.info(f"Generating report for {incident_type} incident: {title}")
+        
+        response = self.chat(messages, temperature=0.2, max_tokens=2048)
+        
+        try:
+            # Extract JSON from response
+            json_start = response.find('{')
+            json_end = response.rfind('}') + 1
+            
+            if json_start >= 0 and json_end > json_start:
+                json_str = response[json_start:json_end]
+                report = json.loads(json_str)
+                
+                # Validate structure
+                required_fields = ['title', 'executive_summary', 'overview', 'top_items', 'recommendations']
+                if all(k in report for k in required_fields):
+                    logger.info(f"Report generated successfully with all required fields")
+                    return report
+                else:
+                    missing = [k for k in required_fields if k not in report]
+                    logger.warning(f"Report missing fields: {missing}")
+                    return report if report else {}
+            
+            logger.error(f"Failed to parse report JSON: {response}")
+            return {}
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON parsing error in report generation: {str(e)}")
+            return {}

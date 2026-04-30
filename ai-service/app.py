@@ -31,9 +31,11 @@ def create_app(config=None):
     try:
         from routes.describe import describe_bp
         from routes.recommend import recommend_bp
+        from routes.analyse import analyse_bp
         app.register_blueprint(describe_bp)
         app.register_blueprint(recommend_bp)
-        logger.info("Registered describe and recommend blueprints")
+        app.register_blueprint(analyse_bp)
+        logger.info("Registered describe, recommend, and analyse blueprints")
     except Exception as e:
         logger.error(f"Failed to register blueprints: {str(e)}")
     
@@ -67,18 +69,25 @@ def create_app(config=None):
                 "describe": [
                     "POST /api/describe - Comprehensive incident analysis",
                     "POST /api/describe/similar - Find similar incidents",
-                    "POST /api/describe/summary - Executive summary"
+                    "POST /api/describe/summary - Executive summary",
+                    "POST /api/describe/generate-report - Generate structured report",
+                    "POST /api/describe/generate-report-stream - Stream report tokens (SSE)"
                 ],
                 "recommend": [
                     "POST /api/recommend - Action recommendations",
                     "POST /api/recommend/escalation - Escalation procedures",
                     "POST /api/recommend/remediation - Remediation plan"
                 ],
+                "analyse": [
+                    "POST /api/analyse/document - Analyze document for insights and risks",
+                    "POST /api/analyse/document/bulk - Batch analyze multiple documents"
+                ],
                 "health": [
                     "GET /health - Health check"
                 ]
             },
-            "framework": "MITRE ATT&CK / CVSS / NIST CSF"
+            "framework": "MITRE ATT&CK / CVSS / NIST CSF",
+            "features": ["incident_analysis", "structured_recommendations", "report_generation", "streaming_reports", "document_analysis"]
         }), 200
     
     logger.info("Flask application created successfully")

@@ -382,3 +382,74 @@ class GroqClient:
         for token in self.chat_stream(messages, temperature=0.2, max_tokens=2048):
             yield token
 
+    def analyze_document(
+        self,
+        content: str,
+        doc_type: str = "security_document",
+        source: str = "unknown",
+        priority: str = "medium",
+        system_prompt: str = "",
+    ) -> Dict[str, Any]:
+        """Analyze a document for security insights, risks, and key findings.
+        
+        Args:
+            content: Document text content to analyze
+            doc_type: Type of document (policy, log, alert, configuration, report, etc.)
+            source: Source of the document (system, application, team, etc.)
+            priority: Priority level (low, medium, high, critical)
+            system_prompt: System prompt for analyst persona
+            
+        Returns:
+            Dictionary with analysis containing findings, insights, risks, compliance notes
+        """
+        import json
+        from prompts.templates import ANALYZE_DOCUMENT_PROMPT
+
+        # Truncate document if too long to avoid token limits
+        max_doc_length = 8000
+        if len(content) > max_doc_length:
+            logger.warning(f"Document truncated from {len(content)} to {max_doc_length} characters")
+            content = content[:max_doc_length]
+
+        user_prompt = ANALYZE_DOCUMENT_PROMPT.format(
+            content=content,
+            doc_type=doc_type,
+            source=source,
+            priority=priority
+        )
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+
+        logger.info(f"Analyzing document: {doc_type} from {source}")
+        
+        response = self.chat(messages, temperature=0.2, max_tokens=2048)
+        
+        try:
+            # Extract JSON from response
+            json_start = response.find('{')
+            json_end = response.rfind('}') + 1
+            
+            if json_start >= 0 and json_end > json_start:
+                json_str = response[json_start:json_end]
+                analysis = json.loads(json_str)
+                
+                # Validate structure
+                required_fields = ['document_title', 'summary', 'findings', 'key_insights', 'risk_assessment']
+                if all(k in analysis for k in required_fields):
+                    logger.info(f"Document analysis complete with {len(analysis.get('findings', []))} findings")
+                    return analysis
+                else:
+                    missing = [k for k in required_fields if k not in analysis]
+                    logger.warning(f"Analysis missing fields: {missing}")
+                    return analysis if analysis else {}
+            
+            logger.error(f"Failed to parse analysis JSON: {response}")
+            return {}
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON parsing error in document analysis: {str(e)}")
+            return {}
+
+

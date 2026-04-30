@@ -252,3 +252,67 @@ REQUIREMENTS:
 - Use MITRE ATT&CK and CVSS context where applicable
 - All text must be professional enterprise-grade quality
 - Ensure valid JSON formatting with no markdown or escaping issues"""
+
+ANALYZE_DOCUMENT_PROMPT = """Analyze the following document for security insights, risks, and key findings.
+
+DOCUMENT CONTENT:
+{content}
+
+ANALYSIS CONTEXT:
+Document Type: {doc_type}
+Source: {source}
+Priority Level: {priority}
+
+Please analyze this document and identify key security insights and risks. Produce ONLY a valid JSON object with NO additional text. Structure exactly as follows:
+
+{{
+  "document_title": "Descriptive title summarizing the document content",
+  "summary": "Brief 2-3 sentence summary of the document and its key topics",
+  "findings": [
+    {{
+      "finding_type": "insight|risk|threat|vulnerability|misconfiguration|compliance_gap|best_practice|anomaly",
+      "title": "Concise title of the finding",
+      "description": "Detailed description of the finding with context and implications",
+      "severity": "critical|high|medium|low|informational",
+      "impact": "Brief statement of potential impact if not addressed",
+      "recommendation": "Specific actionable recommendation to address this finding",
+      "references": "MITRE ATT&CK | CVSS | Framework | Standard reference if applicable"
+    }}
+  ],
+  "key_insights": [
+    {{
+      "insight": "Notable observation or pattern identified",
+      "significance": "Why this insight matters"
+    }}
+  ],
+  "risk_assessment": {{
+    "overall_risk_level": "critical|high|medium|low",
+    "primary_threats": ["threat 1", "threat 2", "threat 3"],
+    "critical_gaps": ["gap 1", "gap 2"],
+    "immediate_actions_required": ["action 1", "action 2"],
+    "business_impact": "Description of potential business impact"
+  }},
+  "compliance_notes": {{
+    "frameworks_applicable": ["NIST", "GDPR", "HIPAA", "SOC2", "PCI-DSS"],
+    "gaps_identified": ["compliance gap 1", "compliance gap 2"],
+    "recommendations": "Specific recommendations for compliance improvement"
+  }},
+  "metadata": {{
+    "analyzed_at": "ISO 8601 timestamp",
+    "analysis_confidence": "high|medium|low",
+    "sections_reviewed": 5,
+    "findings_count": 5
+  }}
+}}
+
+REQUIREMENTS:
+- Identify minimum 3 to maximum 10 findings
+- Vary finding types across insights, risks, threats, vulnerabilities, etc.
+- Severity must be appropriate to the finding type
+- Recommendations must be specific and actionable
+- Include MITRE ATT&CK references where applicable
+- Focus on security, compliance, and operational risks
+- Provide balanced assessment (don't over-inflate minor issues)
+- All findings must be evidenced by the document content
+- Use professional, technical language
+- Ensure valid JSON formatting with no markdown or escaping issues"""

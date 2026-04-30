@@ -18,6 +18,8 @@ public class IncidentDTO {
     private String description;
     private String status;
     private String severity;
+    private String incidentType;
+    private String aiAnalysis;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

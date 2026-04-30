@@ -38,6 +38,12 @@ public class Incident {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(columnDefinition = "TEXT", nullable = true)
+    private String aiAnalysis;
+
+    @Column(name = "incident_type")
+    private String incidentType;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

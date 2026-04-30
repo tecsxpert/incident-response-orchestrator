@@ -52,6 +52,11 @@ server:
   servlet:
     context-path: /api
 
+# AI Service Configuration
+ai:
+  service:
+    base-url: ${AI_SERVICE_URL:http://localhost:5000}
+
 # Logging Configuration
 logging:
   level:

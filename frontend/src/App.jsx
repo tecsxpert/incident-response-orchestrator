@@ -7,6 +7,7 @@ import EditIncident from "./pages/EditIncident";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import IncidentDetail from "./pages/IncidentDetail";
+import Analytics from "./pages/Analytics";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/create" element={<ProtectedRoute><CreateIncident /></ProtectedRoute>} />
           <Route path="/edit/:id" element={<ProtectedRoute><EditIncident /></ProtectedRoute>} />
           <Route path="/incidents/:id" element={<ProtectedRoute><IncidentDetail /></ProtectedRoute>} />
+          <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

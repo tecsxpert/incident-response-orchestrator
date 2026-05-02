@@ -96,16 +96,27 @@ export default function IncidentList() {
     );
   }
 
+  function handleExport() {
+    window.open(`${import.meta.env.VITE_API_URL}/api/incidents/export`, "_blank");
+  }
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Incidents</h1>
+        <div className="flex gap-2">
+        <button
+          onClick={handleExport}
+          className="border border-gray-300 hover:bg-gray-100 px-4 py-2 rounded text-sm">
+          Export CSV
+        </button>
         <button
           onClick={() => navigate("/create")}
           className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm">
           Create Incident
         </button>
       </div>
+    </div>
 
       <div className="flex gap-3 mb-4 flex-wrap">
         <input

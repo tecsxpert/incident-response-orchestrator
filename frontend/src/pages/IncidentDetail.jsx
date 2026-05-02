@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import api from "../services/api";
 import AiPanel from "../components/AiPanel";
+import StreamingReport from "../components/StreamingReport";
 
 const mockIncident = {
   id: 1,
@@ -120,6 +121,7 @@ export default function IncidentDetail() {
       </div>
 
       <AiPanel incident={incident} />
+      <StreamingReport incidentId={incident.id} />
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import api from "../services/api";
+import AiPanel from "../components/AiPanel";
+import StreamingReport from "../components/StreamingReport";
 
 const mockIncident = {
   id: 1,
@@ -65,6 +67,18 @@ export default function IncidentDetail() {
     );
   }
 
+  if (!incident) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Incident Detail</h1>
+        <div className="text-center py-16">
+          <p className="text-gray-400 text-lg">Incident not found.</p>
+          <p className="text-gray-300 text-sm mt-1">It may have been deleted or does not exist.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -118,14 +132,8 @@ export default function IncidentDetail() {
         </div>
       </div>
 
-      <div className="border border-gray-300 rounded p-4">
-        <h2 className="text-lg font-semibold mb-2">AI Analysis</h2>
-        {incident.aiAnalysis ? (
-          <p className="text-sm text-gray-700">{incident.aiAnalysis}</p>
-        ) : (
-          <p className="text-sm text-gray-400">AI analysis not available yet.</p>
-        )}
-      </div>
+      <AiPanel incident={incident} />
+      <StreamingReport incidentId={incident.id} />
     </div>
   );
 }

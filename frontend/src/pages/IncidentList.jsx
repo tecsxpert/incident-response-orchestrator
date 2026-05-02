@@ -102,29 +102,29 @@ export default function IncidentList() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
         <h1 className="text-2xl font-bold">Incidents</h1>
         <div className="flex gap-2">
         <button
           onClick={handleExport}
-          className="border border-gray-300 hover:bg-gray-100 px-4 py-2 rounded text-sm">
+          className="border border-gray-300 hover:bg-gray-100 px-2 py-1 sm:px-4 sm:py-2 rounded text-xs sm:text-sm"> 
           Export CSV
         </button>
         <button
           onClick={() => navigate("/create")}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm">
+          className="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 sm:px-4 sm:py-2 rounded text-xs sm:text-sm">
           Create Incident
         </button>
       </div>
     </div>
 
-      <div className="flex gap-3 mb-4 flex-wrap">
+      <div className="flex gap-2 mb-4 flex-wrap items-center">
         <input
           type="text"
           placeholder="Search incidents..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border border-gray-300 rounded px-3 py-2 text-sm w-64" />
+          className="border border-gray-300 rounded px-3 py-2 text-sm w-36" />
         <select
           value={status}
           onChange={(e) => { setStatus(e.target.value); setPage(0); }}
@@ -134,16 +134,18 @@ export default function IncidentList() {
           <option value="IN_PROGRESS">IN_PROGRESS</option>
           <option value="RESOLVED">RESOLVED</option>
         </select>
-        <DatePicker
-          selected={fromDate}
-          onChange={(date) => { setFromDate(date); setPage(0); }}
-          placeholderText="From date"
-          className="border border-gray-300 rounded px-3 py-2 text-sm" />
-        <DatePicker
-          selected={toDate}
-          onChange={(date) => { setToDate(date); setPage(0); }}
-          placeholderText="To date"
-          className="border border-gray-300 rounded px-3 py-2 text-sm" />
+        <div className="flex gap-2">
+          <DatePicker
+            selected={fromDate}
+            onChange={(date) => { setFromDate(date); setPage(0); }}
+            placeholderText="From date"
+            className="border border-gray-300 rounded px-3 py-2 text-sm w-28" />
+          <DatePicker
+            selected={toDate}
+            onChange={(date) => { setToDate(date); setPage(0); }}
+            placeholderText="To date"
+            className="border border-gray-300 rounded px-3 py-2 text-sm w-28" />
+        </div>
       </div>
 
       {incidents.length === 0 ? (

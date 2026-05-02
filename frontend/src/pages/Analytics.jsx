@@ -62,6 +62,18 @@ export default function Analytics() {
     );
   }
 
+  if (!stats || stats.total === 0) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Analytics</h1>
+        <div className="text-center py-16">
+          <p className="text-gray-400 text-lg">No data available yet.</p>
+          <p className="text-gray-300 text-sm mt-1">Incidents will appear here once created.</p>
+        </div>
+      </div>
+   );
+ }
+
   const barData = [
     { name: "LOW", count: 8 },
     { name: "MEDIUM", count: stats.inProgress },

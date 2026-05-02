@@ -67,6 +67,18 @@ export default function IncidentDetail() {
     );
   }
 
+  if (!incident) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Incident Detail</h1>
+        <div className="text-center py-16">
+          <p className="text-gray-400 text-lg">Incident not found.</p>
+          <p className="text-gray-300 text-sm mt-1">It may have been deleted or does not exist.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <div className="flex justify-between items-center mb-6">

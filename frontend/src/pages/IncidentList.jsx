@@ -48,8 +48,8 @@ export default function IncidentList() {
     const from = fromDate ? fromDate.toISOString().split("T")[0] : "";
     const to = toDate ? toDate.toISOString().split("T")[0] : "";
 
-    let url = `/api/incidents/all?page=${page}&size=10&sort=${sortField},${sortDir}`;
-    if (debounced) url = `/api/incidents/search?q=${debounced}&page=${page}&size=10`;
+    let url = `/incidents?page=${page}&size=10&sortBy=${sortField}&sortDir=${sortDir}`;
+    if (debounced) url = `/incidents?q=${debounced}&page=${page}&size=10&sortBy=${sortField}&sortDir=${sortDir}`;
     if (status) url += `&status=${status}`;
     if (from) url += `&from=${from}`;
     if (to) url += `&to=${to}`;

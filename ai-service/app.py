@@ -32,10 +32,12 @@ def create_app(config=None):
         from routes.describe import describe_bp
         from routes.recommend import recommend_bp
         from routes.analyse import analyse_bp
+        from routes.batch import batch_bp
         app.register_blueprint(describe_bp)
         app.register_blueprint(recommend_bp)
         app.register_blueprint(analyse_bp)
-        logger.info("Registered describe, recommend, and analyse blueprints")
+        app.register_blueprint(batch_bp)
+        logger.info("Registered describe, recommend, analyse, and batch blueprints")
     except Exception as e:
         logger.error(f"Failed to register blueprints: {str(e)}")
     
@@ -82,12 +84,17 @@ def create_app(config=None):
                     "POST /api/analyse/document - Analyze document for insights and risks",
                     "POST /api/analyse/document/bulk - Batch analyze multiple documents"
                 ],
+                "batch": [
+                    "POST /api/batch/process - Batch process up to 20 items with 100ms delay",
+                    "POST /api/batch/process/parallel - Parallel batch processing",
+                    "GET /api/batch/status/<batch_id> - Get batch processing status"
+                ],
                 "health": [
                     "GET /health - Health check"
                 ]
             },
             "framework": "MITRE ATT&CK / CVSS / NIST CSF",
-            "features": ["incident_analysis", "structured_recommendations", "report_generation", "streaming_reports", "document_analysis"]
+            "features": ["incident_analysis", "structured_recommendations", "report_generation", "streaming_reports", "document_analysis", "batch_processing"]
         }), 200
     
     logger.info("Flask application created successfully")

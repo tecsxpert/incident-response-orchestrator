@@ -1,0 +1,39 @@
+### 1. Login to get your JWT Token
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "password123"
+}
+
+### 2. Get All Incidents (Cache Test)
+GET http://localhost:8080/api/incidents/all?page=0&size=10
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc3NzQ4ODYyNSwiZXhwIjoxNzc3NTc1MDI1fQ.BmutPziOeXvkEFfLZJ4ivQMvFzSIe8C-VYBRPHftMxM
+
+
+### 3. Create a New Incident (Triggers Email!)
+POST http://localhost:8080/api/incidents/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc3NzUzMzQ4NiwiZXhwIjoxNzc3NjE5ODg2fQ.RooQltZSHYTDuEJbmtVAvD9WAvwNozJD5_KvLSlA6R0
+
+{
+  "title": "Main Database Down",
+  "description": "Production database is unresponsive causing login failures.",
+  "priority": "HIGH"
+}
+
+### 4. Test 404 Global Exception Handler
+GET http://localhost:8080/api/incidents/99999
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc3NzUzMzQ4NiwiZXhwIjoxNzc3NjE5ODg2fQ.RooQltZSHYTDuEJbmtVAvD9WAvwNozJD5_KvLSlA6R0
+
+### 5. Upload Attachment
+POST http://localhost:8080/api/incidents/3/upload
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc3NzU0NzYyNSwiZXhwIjoxNzc3NjM0MDI1fQ.zlvn0P29z9yWUt1BQ-wb3DnvMrJ8RcFI9-H4mT8uSis
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="test.png"
+
+< C:/Users/LENOVO/Pictures/Screenshots/Screenshot (266).png
+--boundary--

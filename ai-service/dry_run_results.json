@@ -1,0 +1,77 @@
+{
+  "timestamp": "2026-05-04T20:06:01.464347",
+  "summary": {
+    "total_tests": 6,
+    "successful": 6,
+    "failed": 0,
+    "success_rate": "100.0%",
+    "avg_response_time_ms": "12274.7",
+    "min_response_time_ms": "2787.5",
+    "max_response_time_ms": "36924.1",
+    "median_response_time_ms": "6560.0",
+    "total_data_transferred_mb": "0.06",
+    "test_duration_seconds": 73.653956
+  },
+  "results": [
+    {
+      "endpoint": "POST /api/describe",
+      "scenario": "Ransomware Analysis",
+      "status_code": 200,
+      "response_time_ms": 6326.141834259033,
+      "response_size_bytes": 5475,
+      "success": true,
+      "details": "Analysis: 5052 chars",
+      "timestamp": "2026-05-04T20:04:54.128523"
+    },
+    {
+      "endpoint": "POST /api/describe/stream",
+      "scenario": "SSH Brute Force (Stream)",
+      "status_code": 200,
+      "response_time_ms": 5115.471124649048,
+      "response_size_bytes": 9867,
+      "success": true,
+      "details": "Stream: 762 chunks, 9867 bytes",
+      "timestamp": "2026-05-04T20:04:59.243994"
+    },
+    {
+      "endpoint": "POST /api/recommend",
+      "scenario": "Ransomware Recommendations",
+      "status_code": 200,
+      "response_time_ms": 2787.5497341156006,
+      "response_size_bytes": 746,
+      "success": true,
+      "details": "Recommendations: 3",
+      "timestamp": "2026-05-04T20:05:02.033532"
+    },
+    {
+      "endpoint": "POST /api/analyse/document",
+      "scenario": "Security Event Log Analysis",
+      "status_code": 200,
+      "response_time_ms": 6559.996128082275,
+      "response_size_bytes": 6682,
+      "success": true,
+      "details": "Findings: 8",
+      "timestamp": "2026-05-04T20:05:08.593528"
+    },
+    {
+      "endpoint": "POST /api/analyse/bulk",
+      "scenario": "Multi-Document Analysis",
+      "status_code": 200,
+      "response_time_ms": 15934.842586517334,
+      "response_size_bytes": 17450,
+      "success": true,
+      "details": "Documents analyzed: 3",
+      "timestamp": "2026-05-04T20:05:24.530328"
+    },
+    {
+      "endpoint": "POST /api/batch/process",
+      "scenario": "Batch Processing (4 items)",
+      "status_code": 200,
+      "response_time_ms": 36924.097537994385,
+      "response_size_bytes": 22897,
+      "success": true,
+      "details": "Items processed: 4/4",
+      "timestamp": "2026-05-04T20:06:01.454426"
+    }
+  ]
+}

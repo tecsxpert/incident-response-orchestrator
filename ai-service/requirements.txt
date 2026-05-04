@@ -8,4 +8,5 @@ sentence-transformers==2.2.2
 torch==2.1.2
 transformers==4.42.3
 huggingface-hub==0.23.2
+redis==5.0.1
 

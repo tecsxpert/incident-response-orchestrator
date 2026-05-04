@@ -1,10 +1,13 @@
 """
 Groq API client for incident response analysis.
-Handles AI-powered incident analysis using Groq's mixtral-8x7b-32768 model.
+Handles AI-powered incident analysis using Groq's mixtral-8x7b-versatile model.
+Includes Redis caching for performance optimization.
 """
 
 import os
 import logging
+import hashlib
+import json
 from groq import Groq
 from typing import Optional, Dict, List, Any
 from dotenv import load_dotenv
@@ -13,6 +16,21 @@ from dotenv import load_dotenv
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+
+
+def _get_cache():
+    """Get Redis cache instance from app context."""
+    try:
+        from app import get_redis_cache
+        return get_redis_cache()
+    except ImportError:
+        return None
+
+
+def _cache_key(prefix: str, *args) -> str:
+    """Generate cache key from prefix and arguments."""
+    key_str = f"{prefix}:" + ":".join(str(arg) for arg in args)
+    return f"groq:{hashlib.md5(key_str.encode()).hexdigest()}"
 
 
 class GroqClient:
@@ -40,8 +58,9 @@ class GroqClient:
         temperature: float = 0.3,
         max_tokens: int = 2048,
         top_p: float = 1.0,
+        use_cache: bool = True,
     ) -> str:
-        """Low-level chat completion API wrapper.
+        """Low-level chat completion API wrapper with Redis caching.
         
         Args:
             messages: List of message dicts with 'role' and 'content'
@@ -49,12 +68,33 @@ class GroqClient:
             temperature: Sampling temperature (0.3 for consistency)
             max_tokens: Maximum response tokens (2048 for comprehensive output)
             top_p: Nucleus sampling parameter
+            use_cache: Whether to use Redis cache (default True)
             
         Returns:
             Response text from the model
         """
         try:
             model = model or self.model
+            
+            # Generate cache key from messages
+            if use_cache:
+                cache_key = _cache_key(
+                    "chat",
+                    model,
+                    temperature,
+                    max_tokens,
+                    json.dumps(messages, sort_keys=True)
+                )
+                cache = _get_cache()
+                
+                # Try to get from cache
+                if cache:
+                    cached_response = cache.get(cache_key)
+                    if cached_response:
+                        logger.debug(f"Cache hit for key: {cache_key}")
+                        return cached_response
+            
+            # Call Groq API
             response = self.client.chat.completions.create(
                 messages=messages,
                 model=model,
@@ -62,7 +102,17 @@ class GroqClient:
                 max_tokens=max_tokens,
                 top_p=top_p,
             )
-            return response.choices[0].message.content
+            result = response.choices[0].message.content
+            
+            # Cache the response (30 minute TTL)
+            if use_cache and cache:
+                try:
+                    cache.setex(cache_key, 1800, result)
+                    logger.debug(f"Cached response with key: {cache_key}")
+                except Exception as e:
+                    logger.debug(f"Failed to cache response: {str(e)}")
+            
+            return result
         except Exception as e:
             logger.error(f"Error calling Groq API: {str(e)}")
             raise
@@ -451,5 +501,48 @@ class GroqClient:
         except json.JSONDecodeError as e:
             logger.error(f"JSON parsing error in document analysis: {str(e)}")
             return {}
+
+    def get_embedding_model(self):
+        """Get the pre-loaded sentence-transformers embedding model.
+        
+        Returns:
+            SentenceTransformer model if available, None otherwise
+        """
+        try:
+            from app import get_embedding_model
+            model = get_embedding_model()
+            if model:
+                logger.debug("Using pre-loaded embedding model from app context")
+                return model
+        except ImportError:
+            logger.debug("Could not import embedding model from app context")
+            pass
+        
+        # Fallback: lazy load model if not pre-loaded
+        try:
+            logger.info("Lazy-loading sentence-transformers embedding model")
+            from sentence_transformers import SentenceTransformer
+            return SentenceTransformer('all-MiniLM-L6-v2')
+        except Exception as e:
+            logger.warning(f"Could not load embedding model: {str(e)}")
+            return None
+
+    def clear_cache(self):
+        """Clear Redis cache for all Groq responses.
+        
+        Returns:
+            Number of keys cleared
+        """
+        try:
+            cache = _get_cache()
+            if cache:
+                keys = cache.keys('groq:*')
+                if keys:
+                    cache.delete(*keys)
+                    logger.info(f"Cleared {len(keys)} cache entries")
+                    return len(keys)
+        except Exception as e:
+            logger.warning(f"Failed to clear cache: {str(e)}")
+        return 0
 
 

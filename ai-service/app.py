@@ -5,6 +5,7 @@ from flask_cors import CORS
 from config import get_config
 import logging
 import os
+import atexit
 
 
 # Configure logging
@@ -13,6 +14,54 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Global cache for pre-loaded models
+_embedding_model = None
+_redis_cache = None
+
+
+def _preload_models():
+    """Pre-load embedding model and initialize cache at startup."""
+    global _embedding_model, _redis_cache
+    
+    try:
+        # Pre-load sentence-transformers embedding model
+        logger.info("Pre-loading sentence-transformers embedding model...")
+        from sentence_transformers import SentenceTransformer
+        _embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+        logger.info("✓ Embedding model loaded successfully")
+    except Exception as e:
+        logger.warning(f"Failed to pre-load embedding model: {str(e)}")
+        _embedding_model = None
+    
+    try:
+        # Initialize Redis cache
+        logger.info("Initializing Redis cache...")
+        import redis
+        _redis_cache = redis.Redis(
+            host=os.getenv('REDIS_HOST', 'localhost'),
+            port=int(os.getenv('REDIS_PORT', 6379)),
+            db=int(os.getenv('REDIS_DB', 0)),
+            decode_responses=True,
+            socket_connect_timeout=5,
+            socket_keepalive=True
+        )
+        # Test connection
+        _redis_cache.ping()
+        logger.info("✓ Redis cache initialized and connected")
+    except Exception as e:
+        logger.info(f"Redis cache not available (optional): {str(e)}")
+        _redis_cache = None
+
+
+def get_embedding_model():
+    """Get pre-loaded embedding model."""
+    return _embedding_model
+
+
+def get_redis_cache():
+    """Get Redis cache instance."""
+    return _redis_cache
 
 
 def create_app(config=None):
@@ -26,6 +75,9 @@ def create_app(config=None):
     
     # Enable CORS
     CORS(app)
+    
+    # Pre-load models and initialize cache
+    _preload_models()
     
     # Register blueprints
     try:

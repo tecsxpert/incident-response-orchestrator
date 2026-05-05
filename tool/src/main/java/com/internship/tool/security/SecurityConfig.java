@@ -26,6 +26,10 @@ public class SecurityConfig {
                 // Set up the routing rules
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // Allow everyone to login/register
+
+                        // --- DAY 9 EDIT: Allow browser to view files without a token ---
+                        .requestMatchers("/api/incidents/files/**").permitAll()
+
                         .anyRequest().authenticated()            // Require token for everything else
                 )
 
@@ -39,6 +43,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
     // 1. Give Spring Boot an Authentication Manager
     @Bean
     public org.springframework.security.authentication.AuthenticationManager authenticationManager(

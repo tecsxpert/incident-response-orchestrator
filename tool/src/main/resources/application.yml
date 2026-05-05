@@ -37,6 +37,8 @@ spring:
           starttls:
             enable: true
 
+
+
 # JWT Configuration
 jwt:
   secret: mySuperSecretDevelopmentKeyThatIsVeryLong12345!
@@ -47,3 +49,6 @@ jwt:
     multipart:
       max-file-size= 10MB
       max-request-size= 10MB
+
+  cache:
+    type=none

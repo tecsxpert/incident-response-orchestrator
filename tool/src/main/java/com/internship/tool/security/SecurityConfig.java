@@ -20,38 +20,35 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF since we are using Tokens instead of session cookies
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // Set up the routing rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Allow everyone to login/register
-
-                        // --- DAY 9 EDIT: Allow browser to view files without a token ---
+                        // --- AUTH & FILES ---
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/incidents/files/**").permitAll()
 
-                        .anyRequest().authenticated()            // Require token for everything else
-                )
+                        // --- DAY 12 EDIT: Allow Swagger UI and OpenAPI Docs ---
+                        .requestMatchers(
+                                "/v3/api-docs/**",      // The JSON documentation
+                                "/swagger-ui/**",       // The UI assets (JS/CSS)
+                                "/swagger-ui.html"      // The entry point
+                        ).permitAll()
 
-                // Tell Spring to be stateless (don't save session state)
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
-                // Put our custom JwtAuthFilter in front of the default username/password filter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // 1. Give Spring Boot an Authentication Manager
     @Bean
     public org.springframework.security.authentication.AuthenticationManager authenticationManager(
             org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // 2. Create a temporary hardcoded user for testing
     @Bean
     public org.springframework.security.core.userdetails.UserDetailsService userDetailsService() {
         org.springframework.security.core.userdetails.UserDetails admin = org.springframework.security.core.userdetails.User.builder()
@@ -62,7 +59,6 @@ public class SecurityConfig {
         return new org.springframework.security.provisioning.InMemoryUserDetailsManager(admin);
     }
 
-    // 3. Set up the password encoder
     @Bean
     public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
         return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();

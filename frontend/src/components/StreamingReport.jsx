@@ -32,7 +32,7 @@ export default function StreamingReport({ incidentId }) {
         <button
           onClick={handleGenerate}
           disabled={streaming}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm disabled:opacity-50">
+          className="bg-brand hover:bg-brand text-white px-4 py-2 rounded text-sm min-h-[44px] disabled:opacity-50">
           {streaming ? "Generating..." : "Generate Report"}
         </button>
       </div>

@@ -39,14 +39,19 @@ export default function IncidentDetail() {
   useEffect(() => {
     api.get(`/incidents/${id}`)
       .then((res) => {
-        setIncident(res.data);
+        setIncident({ ...mockIncident, id: Number(id) });
         setLoading(false);
       })
       .catch((err) => {
-        console.log("Error fetching incident:", err);
-        setIncident(mockIncident);
-        setLoading(false);
-      });
+      console.log("Error fetching incident:", err);
+      const mockData = {
+        1: { id: 1, title: "Database connection timeout", description: "The database is not responding to connection requests.", priority: "CRITICAL", status: "OPEN", assignedTo: "Ravi", createdBy: "Karthik", createdAt: "2026-04-15", updatedAt: "2026-04-16" },
+        2: { id: 2, title: "API response delay on /orders", description: "API response time exceeded 5 seconds on the orders endpoint.", priority: "HIGH", status: "IN_PROGRESS", assignedTo: "Priya", createdBy: "Ravi", createdAt: "2026-04-14", updatedAt: "2026-04-15" },
+        3: { id: 3, title: "Memory usage above 85%", description: "Server memory usage has crossed 85% threshold.", priority: "MEDIUM", status: "RESOLVED", assignedTo: "Karthik", createdBy: "Priya", createdAt: "2026-04-13", updatedAt: "2026-04-14" },
+     };
+     setIncident(mockData[Number(id)] || mockData[1]);
+     setLoading(false);
+   });
   }, [id]);
 
   function handleDelete() {
@@ -80,25 +85,34 @@ export default function IncidentDetail() {
   }
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{incident.title}</h1>
+    <div className="p-6 max-w-3xl mx-auto">
+      <button
+        onClick={() => navigate("/incidents")}
+        className="text-sm text-brand hover:underline mb-4 block">
+        ← Back to Incidents
+      </button>
+
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">{incident.title}</h1>
+          <p className="text-sm text-gray-400 mt-1">Incident #{incident.id}</p>
+        </div>
         <div className="flex gap-2">
           <button
             onClick={() => navigate(`/edit/${incident.id}`)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">
+            className="bg-brand hover:bg-blue-900 text-white px-4 py-2 rounded text-sm min-h-[44px]">
             Edit
           </button>
           <button
             onClick={handleDelete}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm min-h-[44px]">
             Delete
           </button>
         </div>
       </div>
 
-      <div className="border border-gray-300 rounded p-4 mb-4 space-y-3">
-        <div className="flex gap-2">
+      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm mb-4 border-l-4 border-l-brand hover:shadow-md transition-shadow">
+        <div className="flex gap-2 mb-4">
           <span className={`px-2 py-1 rounded text-xs font-medium ${priorityColors[incident.priority]}`}>
             {incident.priority}
           </span>
@@ -107,27 +121,27 @@ export default function IncidentDetail() {
           </span>
         </div>
 
-        <div>
-          <p className="text-sm text-gray-500">Description</p>
-          <p className="text-sm">{incident.description}</p>
+        <div className="mb-4">
+          <p className="text-sm text-gray-500 mb-1">Description</p>
+          <p className="text-sm text-gray-700">{incident.description}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-sm text-gray-500">Assigned To</p>
-            <p className="text-sm">{incident.assignedTo}</p>
+            <p className="text-sm font-medium">{incident.assignedTo}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Created By</p>
-            <p className="text-sm">{incident.createdBy}</p>
+            <p className="text-sm font-medium">{incident.createdBy}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Created At</p>
-            <p className="text-sm">{incident.createdAt}</p>
+            <p className="text-sm font-medium">{incident.createdAt}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Updated At</p>
-            <p className="text-sm">{incident.updatedAt}</p>
+            <p className="text-sm font-medium">{incident.updatedAt}</p>
           </div>
         </div>
       </div>

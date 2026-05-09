@@ -33,7 +33,7 @@ const mockTrend = {
   ],
 };
 
-const COLORS = ["#3b82f6", "#a855f7", "#22c55e"];
+const COLORS = ["#3b82f6", "#f97316", "#22c55e"];
 
 export default function Analytics() {
   const [stats, setStats] = useState(null);
@@ -75,10 +75,10 @@ export default function Analytics() {
  }
 
   const barData = [
-    { name: "LOW", count: 8 },
-    { name: "MEDIUM", count: stats.inProgress },
-    { name: "HIGH", count: 12 },
-    { name: "CRITICAL", count: stats.open },
+    { name: "LOW", count: 8, fill: "#22c55e" },
+    { name: "MEDIUM", count: stats.inProgress, fill: "#eab308" },
+    { name: "HIGH", count: 12, fill: "#f97316" },
+    { name: "CRITICAL", count: stats.open, fill: "#ef4444" },
   ];
 
   const pieData = [
@@ -90,7 +90,7 @@ export default function Analytics() {
   const trendData = mockTrend[period];
 
   return (
-    <div className="p-6">
+    <div className="p-6 pb-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold mb-6">Analytics</h1>
           <select
@@ -103,48 +103,51 @@ export default function Analytics() {
         </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-8">
-        <div>
-          <h2 className="text-lg font-semibold mb-3">Incidents by Status</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">Incidents by Priority</h2>
           <BarChart width={400} height={300} data={barData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis dataKey="name" tick={{ fontSize: 13 }} />
+            <YAxis tick={{ fontSize: 13 }} />
             <Tooltip />
-            <Bar dataKey="count" fill="#7c3aed" />
+            <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+              {barData.map((entry, index) => (
+                <Cell key={index} fill={entry.fill} />
+              ))}
+            </Bar>
           </BarChart>
-        </div>
+       </div>
 
-        <div>
-          <h2 className="text-lg font-semibold mb-3">Status Distribution</h2>
+       <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+         <h2 className="text-lg font-semibold text-gray-700 mb-3">Status Distribution</h2>
           <PieChart width={400} height={300}>
-            <Pie
+             <Pie
               data={pieData}
               dataKey="value"
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={100}
-              label>
-              {pieData.map((entry, index) => (
-                <Cell key={index} fill={COLORS[index]} />
-              ))}
+              outerRadius={100}>
+                {pieData.map((entry, index) => (
+                  <Cell key={index} fill={COLORS[index]} />
+                ))}
             </Pie>
             <Tooltip />
           </PieChart>
-        </div>
+       </div>
 
-        <div className="col-span-2">
-          <h2 className="text-lg font-semibold mb-3">Incidents Over Time</h2>
-          <LineChart width={800} height={300} data={trendData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="count" stroke="#7c3aed" />
+       <div className="col-span-1 lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+         <h2 className="text-lg font-semibold text-gray-700 mb-3">Incidents Over Time</h2>
+         <LineChart width={800} height={300} data={trendData}>
+           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+           <XAxis dataKey="month" tick={{ fontSize: 13 }} />
+           <YAxis tick={{ fontSize: 13 }} />
+           <Tooltip />
+           <Line type="monotone" dataKey="count" stroke="#1B4F8A" strokeWidth={2} />
           </LineChart>
-        </div>
-      </div>
-    </div>
+       </div>
+     </div>
+   </div>
   );
 }

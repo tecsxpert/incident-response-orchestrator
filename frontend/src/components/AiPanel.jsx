@@ -33,14 +33,14 @@ export default function AiPanel({incident}) {
         <button
           onClick={handleAsk}
           disabled={loading}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm disabled:opacity-50">
+          className="bg-brand hover:bg-brand text-white px-4 py-2 rounded text-sm min-h-[44px] disabled:opacity-50">
           {loading ? "Analysing..." : "Ask AI"}
         </button>
       </div>
 
       {loading && (
         <div className="flex items-center gap-2 text-sm text-gray-500">
-          <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin" />
           Getting AI response...
         </div>
       )}
@@ -50,7 +50,7 @@ export default function AiPanel({incident}) {
           <p>{error}</p>
           <button
             onClick={handleAsk}
-            className="mt-2 text-purple-600 hover:underline text-xs">
+            className="mt-2 text-brand hover:underline text-xs">
             Retry
           </button>
         </div>

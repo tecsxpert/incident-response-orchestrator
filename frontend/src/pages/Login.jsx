@@ -42,42 +42,55 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-full max-w-sm p-6 border border-gray-300 rounded">
-        <h1 className="text-2xl font-bold mb-4">Login</h1>
+  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="w-full max-w-sm">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold text-brand">Incident Response</h1>
+        <p className="text-gray-400 text-sm mt-2">Orchestrator Platform</p>
+      </div>
 
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+      <div className="bg-white rounded-xl shadow-md p-8 border border-gray-100">
+        <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">Sign in</h2>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded px-3 py-2 mb-4">
+            <p className="text-red-500 text-sm">{error}</p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1 text-sm font-medium">Username</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Username</label>
             <input
               type="text"
               name="username"
               value={form.username}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
-              {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand"
+            />
+            {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
           </div>
 
           <div>
-            <label className="block mb-1 text-sm font-medium">Password</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
               name="password"
               value={form.password}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm" />
-              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand"
+            />
+            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm">
-            Login
+            className="w-full bg-brand hover:bg-blue-900 text-white px-4 py-3 rounded-lg text-sm font-medium min-h-[44px] transition-colors mt-2">
+            Sign In
           </button>
         </form>
       </div>
     </div>
-  );
+  </div>
+);
 }

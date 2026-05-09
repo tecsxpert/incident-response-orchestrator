@@ -22,7 +22,7 @@ export default class ErrorBoundary extends Component {
           <p className="text-sm text-gray-400 mb-4">Please refresh the page or try again later.</p>
           <button
             onClick={() => this.setState({ hasError: false })}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm">
+            className="bg-brand hover:bg-brand text-white px-4 py-2 rounded text-sm min-h-[44px]">
             Try Again
           </button>
         </div>

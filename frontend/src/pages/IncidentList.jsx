@@ -4,6 +4,19 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import api from "../services/api";
 
+const priorityColors = {
+  LOW: "bg-green-100 text-green-700",
+  MEDIUM: "bg-yellow-100 text-yellow-700",
+  HIGH: "bg-orange-100 text-orange-700",
+  CRITICAL: "bg-red-100 text-red-700",
+};
+
+const statusColors = {
+  OPEN: "bg-blue-100 text-blue-700",
+  IN_PROGRESS: "bg-orange-100 text-orange-700",
+  RESOLVED: "bg-green-100 text-green-700",
+};
+
 // temporary mock data, will be removed once backend API is ready
 const mockIncidents = [
   { id: 1, title: "Database connection timeout", priority: "CRITICAL", status: "OPEN", assignedTo: "Ravi", createdAt: "2026-04-15" },
@@ -112,13 +125,13 @@ export default function IncidentList() {
         </button>
         <button
           onClick={() => navigate("/create")}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 sm:px-4 sm:py-2 rounded text-xs sm:text-sm">
+          className="bg-brand hover:bg-blue-900 bg-brand text-white px-2 py-1 sm:px-4 sm:py-2 rounded text-xs sm:text-sm">
           Create Incident
         </button>
       </div>
     </div>
 
-      <div className="flex gap-2 mb-4 flex-wrap items-center">
+      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm mb-4 flex gap-2 flex-wrap items-center hover:shadow-md transition-shadow">
         <input
           type="text"
           placeholder="Search incidents..."
@@ -151,58 +164,73 @@ export default function IncidentList() {
       {incidents.length === 0 ? (
         <p className="text-gray-500">No incidents found.</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-x-auto">
           <table className="w-full border-collapse border border-gray-300 text-sm">
             <thead className="bg-gray-100">
               <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
+                <th className="border border-gray-300 px-4 py-2 text-left cursor-pointer hover:bg-gray-200 transition-colors">ID</th>
                 <th
-                  className="border border-gray-300 px-4 py-2 text-left cursor-pointer"
+                  className="border border-gray-300 px-4 py-2 text-left cursor-pointer hover:bg-gray-200 transition-colors"
                   onClick={() => handleSort("title")}>
                   Title {sortField === "title" ? (sortDir === "asc" ? "↑" : "↓") : ""}
                 </th>
                 <th
-                  className="border border-gray-300 px-4 py-2 text-left cursor-pointer"
+                  className="border border-gray-300 px-4 py-2 text-left cursor-pointer hover:bg-gray-200 transition-colors"
                   onClick={() => handleSort("priority")}>
                   Priority {sortField === "priority" ? (sortDir === "asc" ? "↑" : "↓") : ""}
                 </th>
                 <th
-                  className="border border-gray-300 px-4 py-2 text-left cursor-pointer"
+                  className="border border-gray-300 px-4 py-2 text-left cursor-pointer hover:bg-gray-200 transition-colors"
                   onClick={() => handleSort("status")}>
                   Status {sortField === "status" ? (sortDir === "asc" ? "↑" : "↓") : ""}
                 </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Assigned To</th>
+                <th className="border border-gray-300 px-4 py-2 text-left cursor-pointer hover:bg-gray-200 transition-colors">Assigned To</th>
                 <th
-                  className="border border-gray-300 px-4 py-2 text-left cursor-pointer"
+                  className="border border-gray-300 px-4 py-2 text-left cursor-pointer hover:bg-gray-200 transition-colors"
                   onClick={() => handleSort("createdAt")}>
                   Created At {sortField === "createdAt" ? (sortDir === "asc" ? "↑" : "↓") : ""}
                 </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
+                <th className="border border-gray-300 px-4 py-2 text-left cursor-pointer hover:bg-gray-200 transition-colors">Actions</th>
               </tr>
             </thead>
             <tbody>
               {incidents.map((incident) => (
-                <tr key={incident.id} className="hover:bg-gray-50">
+                <tr key={incident.id} className="hover:bg-blue-50 transition-colors">
                   <td className="border border-gray-300 px-4 py-2">{incident.id}</td>
                   <td
-                    className="border border-gray-300 px-4 py-2 cursor-pointer text-blue-600 hover:underline"
+                    className="border border-gray-300 px-4 py-2 cursor-pointer text-brand hover:underline"
                     onClick={() => navigate(`/incidents/${incident.id}`)}>
                     {incident.title}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">{incident.priority}</td>
-                  <td className="border border-gray-300 px-4 py-2">{incident.status}</td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${priorityColors[incident.priority]}`}>
+                      {incident.priority}
+                    </span>
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[incident.status]}`}>
+                      {incident.status}
+                    </span>
+                  </td>
                   <td className="border border-gray-300 px-4 py-2">{incident.assignedTo}</td>
                   <td className="border border-gray-300 px-4 py-2">{incident.createdAt}</td>
                   <td className="border border-gray-300 px-4 py-2">
-                    <button
-                      onClick={() => navigate(`/edit/${incident.id}`)}
-                      className="text-blue-600 hover:underline text-xs">
-                      Edit
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => navigate(`/incidents/${incident.id}`)}
+                        className="text-brand hover:underline text-xs">
+                        View
+                      </button>
+                      <button
+                        onClick={() => navigate(`/edit/${incident.id}`)}
+                        className="text-blue-600 hover:underline text-xs">
+                        Edit
+                      </button>
+                   </div>
+                 </td>
+               </tr>
+             ))}
+           </tbody>
           </table>
         </div>
       )}
@@ -211,14 +239,14 @@ export default function IncidentList() {
         <button
           onClick={() => setPage(page - 1)}
           disabled={page === 0}
-          className="px-3 py-1 border rounded text-sm disabled:opacity-50">
+          className="px-3 py-1 border rounded text-sm disabled:opacity-50 hover:bg-gray-100 transition-colors">
           Previous
         </button>
         <span className="text-sm">Page {page + 1} of {totalPages}</span>
         <button
           onClick={() => setPage(page + 1)}
           disabled={page + 1 >= totalPages}
-          className="px-3 py-1 border rounded text-sm disabled:opacity-50">
+          className="px-3 py-1 border rounded text-sm disabled:opacity-50 hover:bg-gray-100 transition-colors">
           Next
         </button>
       </div>

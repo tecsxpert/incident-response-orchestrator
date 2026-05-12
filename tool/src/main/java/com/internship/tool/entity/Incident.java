@@ -39,6 +39,11 @@ public class Incident implements Serializable {
     @Schema(description = "Urgency level of the incident", example = "HIGH", allowableValues = {"LOW", "MEDIUM", "HIGH", "CRITICAL"})
     private String priority;
 
+    // --- DAY 14 ADDITION: SCORE FIELD ---
+    @Column(name = "score")
+    @Schema(description = "Calculated risk score of the incident", example = "85")
+    private Integer score;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     @Schema(description = "Timestamp when the incident was reported", example = "2026-05-07T12:00:00")
@@ -49,21 +54,33 @@ public class Incident implements Serializable {
     @Schema(description = "Timestamp of the last update to the incident", example = "2026-05-07T14:30:00")
     private LocalDateTime updatedAt;
 
-    // Getters and Setters remain the same...
+    // --- GETTERS AND SETTERS ---
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public String getAttachmentPath() { return attachmentPath; }
     public void setAttachmentPath(String attachmentPath) { this.attachmentPath = attachmentPath; }
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
     public String getPriority() { return priority; }
     public void setPriority(String priority) { this.priority = priority; }
+
+    // DAY 14: Score Getter and Setter
+    public Integer getScore() { return score; }
+    public void setScore(Integer score) { this.score = score; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }

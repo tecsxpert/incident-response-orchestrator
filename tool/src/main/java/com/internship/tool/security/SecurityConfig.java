@@ -26,6 +26,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        // 1. Public endpoints (No token needed)
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/incidents/files/**").permitAll()
                         .requestMatchers(
@@ -33,6 +34,12 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
+
+                        // 2. Incident endpoints (Token IS needed)
+                        // Explicitly allowing the /all and /create paths
+                        .requestMatchers("/api/incidents/**").authenticated()
+
+                        // 3. Everything else
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -43,7 +50,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // --- DAY 13 ADDITION: Configure Swagger to show the "Authorize" button ---
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()

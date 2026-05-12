@@ -29,11 +29,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc3NzUzM
 
 ### 5. Upload Attachment
 POST http://localhost:8080/api/incidents/3/upload
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc3NzU0NzYyNSwiZXhwIjoxNzc3NjM0MDI1fQ.zlvn0P29z9yWUt1BQ-wb3DnvMrJ8RcFI9-H4mT8uSis
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTc3Nzk5NjQ5NCwiZXhwIjoxNzc4MDgyODk0fQ.Gw8CqPa3MP5TPvoGc2JozRr2YarWgAD_yVeRpgEkI_c
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
-Content-Disposition: form-data; name="file"; filename="test.png"
+Content-Disposition: form-data; name="file"; filename="project_image.jpg"
+Content-Type: image/jpeg
 
-< C:/Users/LENOVO/Pictures/Screenshots/Screenshot (266).png
+< C:/Users/LENOVO/Downloads/project image.jpg
 --boundary--

@@ -1,5 +1,9 @@
 package com.internship.tool.security;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,38 +19,56 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Autowired
-    private com.internship.tool.security.JwtAuthFilter jwtAuthFilter;
+    private JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF since we are using Tokens instead of session cookies
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // Set up the routing rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Allow everyone to login/register
-                        .anyRequest().authenticated()            // Require token for everything else
-                )
+                        // 1. Public endpoints (No token needed)
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/incidents/files/**").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
 
-                // Tell Spring to be stateless (don't save session state)
+                        // 2. Incident endpoints (Token IS needed)
+                        // Explicitly allowing the /all and /create paths
+                        .requestMatchers("/api/incidents/**").authenticated()
+
+                        // 3. Everything else
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
-                // Put our custom JwtAuthFilter in front of the default username/password filter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-    // 1. Give Spring Boot an Authentication Manager
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                .components(new Components()
+                        .addSecuritySchemes("bearerAuth",
+                                new SecurityScheme()
+                                        .name("bearerAuth")
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")));
+    }
+
     @Bean
     public org.springframework.security.authentication.AuthenticationManager authenticationManager(
             org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
-    // 2. Create a temporary hardcoded user for testing
     @Bean
     public org.springframework.security.core.userdetails.UserDetailsService userDetailsService() {
         org.springframework.security.core.userdetails.UserDetails admin = org.springframework.security.core.userdetails.User.builder()
@@ -57,7 +79,6 @@ public class SecurityConfig {
         return new org.springframework.security.provisioning.InMemoryUserDetailsManager(admin);
     }
 
-    // 3. Set up the password encoder
     @Bean
     public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
         return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();

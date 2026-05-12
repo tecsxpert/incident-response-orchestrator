@@ -2,12 +2,11 @@ spring:
   application:
     name: incident-response-orchestrator
 
-
   # Database Configuration
   datasource:
-    url: jdbc:postgresql://localhost:5432/incident_db
-    username: postgres
-    password: postgres
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/incident_db}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -21,15 +20,15 @@ spring:
   # Redis Configuration
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   # Mail Configuration
   mail:
     host: sandbox.smtp.mailtrap.io
     port: 2525
-    username: 6033da39dc0333
-    password: ffbc50a7bda518
+    username: ${MAIL_USER:6033da39dc0333}
+    password: ${MAIL_PASS:ffbc50a7bda518}
     properties:
       mail:
         smtp:
@@ -37,13 +36,16 @@ spring:
           starttls:
             enable: true
 
-# JWT Configuration
-jwt:
-  secret: mySuperSecretDevelopmentKeyThatIsVeryLong12345!
-  expiration: 86400000
-
-
   servlet:
     multipart:
-      max-file-size= 10MB
-      max-request-size= 10MB
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  cache:
+    type: none
+
+# JWT Configuration
+jwt:
+  # Using a placeholder for the secret to avoid hardcoding
+  secret: ${JWT_SECRET:mySuperSecretDevelopmentKeyThatIsVeryLong12345!}
+  expiration: 86400000

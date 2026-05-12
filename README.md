@@ -46,4 +46,5 @@ Access: Open http://localhost:8080/swagger-ui.html.
 | `JWT_SECRET` | Secret Key (Base64) | `dGhpcy1pcy1zZWNyZXQtMjg0OTI=` |
 | `MAIL_PASS` | SMTP Password | `ffbc50a7bda518` |
 
+
 ---

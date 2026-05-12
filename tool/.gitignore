@@ -34,7 +34,7 @@ build/
 
 # --- Project Specific Ignores ---
 # Ignore the actual uploaded files
-incident_attachments/
+/incident_attachments/
 
 # Ignore local environment configurations
 src/main/resources/application-local.properties

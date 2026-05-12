@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType; // Added for content type
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,8 +42,11 @@ public class IncidentController {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/upload")
-    public ResponseEntity<String> uploadAttachment(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+    // --- UPDATED FOR DAY 13 SYSTEM TEST ---
+    @PostMapping(value = "/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadAttachment(
+            @PathVariable Long id,
+            @RequestPart("file") MultipartFile file) { // @RequestPart helps Swagger identify this as a file
         try {
             String fileName = fileStorageService.storeFile(file);
             Incident incident = incidentService.getIncidentById(id);
@@ -71,7 +74,6 @@ public class IncidentController {
         return new ResponseEntity<>(incident, HttpStatus.OK);
     }
 
-    // 5. Polished GET File (Download/View)
     @GetMapping("/files/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         try {
@@ -79,8 +81,7 @@ public class IncidentController {
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists()) {
-                // Determine the file's content type (image/jpeg, image/png, etc.)
-                String contentType = null;
+                String contentType;
                 try {
                     contentType = Files.probeContentType(filePath);
                 } catch (IOException ex) {
@@ -88,7 +89,7 @@ public class IncidentController {
                 }
 
                 return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(contentType)) // This tells the browser it's an image
+                        .contentType(MediaType.parseMediaType(contentType))
                         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
             } else {
